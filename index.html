@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+</head>
+
+<body>
+
+    <form id="quiz"> </form>
+
+
+    <script>
+
+        let object;
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.open("GET", "quiz.json", true);
+        httpRequest.send();
+        httpRequest.addEventListener("readystatechange", function () {
+            if (this.readyState === this.DONE) {
+                
+                object = JSON.parse(this.response);
+                console.log(object)
+            }
+
+            let json = object
+
+            let quiz = document.getElementById("quiz");
+            let keyList = Object.keys(json.quiz);
+
+            for (let i = 0; i < keyList.length; i++) {
+                let key = keyList[i];
+                let questionItem = json.quiz[key];
+                let html = "<div>";
+                html += "<div><h2>Question " + (i + 1) + ": " + questionItem.question + "</h2></div>";
+                html += "<div>";
+                for (let i = 0; i < questionItem.options.length; i++) {
+                    html += "<div >";
+                    html += "<input type=\"radio\" id=\"q\" checked=\"checked\" name=\"" + key + "_option\"  value=\"" + questionItem.options[i] + "\">" + questionItem.options[i];
+                    html += "</div>";
+                }
+
+                quiz.innerHTML += html;
+            }
+            quiz.innerHTML += "<input type=\"submit\" value=\"submit\">";
+
+
+            function save() {
+
+                var q1 = document.querySelector('input[type="radio"]').checked;
+                localStorage.setItem("answear", q1);
+            }
+
+            let submitButton = document.querySelector('input[type="submit"]');
+            submitButton.onclick = (event) => {
+
+                event.preventDefault();
+
+                save();
+
+               
+            };
+
+        });
+
+
+    </script>
+</body>
+
+</html>
